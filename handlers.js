@@ -1,3 +1,5 @@
+const database = require('./database');
+
 module.exports = {
     list(req, res) {
         res.json(database.inventory.list())
@@ -5,12 +7,14 @@ module.exports = {
 
     add(req, res) {
         // TODO: Validation
+        console.log(req.body);
         database.inventory.add(req.body);
         res.sendStatus(201);
     },
 
     update(req, res) {
         // TODO: Validation
+        console.log(req.params);
         if (database.inventory.update(req.params.id, req.body)) {
             res.sendStatus(200);
         } else {

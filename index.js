@@ -1,5 +1,6 @@
 #!/usr/bin/node
 
+const body_parser = require('body-parser');
 const database = require('./database');
 const express = require('express');
 const path = require('path');
@@ -18,12 +19,12 @@ database.inventory.add({
 });
 
 const server = express();
-
-routes(server);
-
+server.use(body_parser.json());
 server.get('/', (req, res) => {
     res.sendFile(path.resolve('interface.html'))
 });
+
+routes(server);
 
 server.listen(8080);
 

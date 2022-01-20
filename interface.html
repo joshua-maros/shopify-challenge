@@ -4,8 +4,75 @@
     <title>Inventory Management Interface</title>
 </head>
 
+<script>
+    // Returns the content of inputs structured into an item object.
+    function get_input() {
+        return {
+            name: document.getElementById('name').value,
+            description: document.getElementById('description').value,
+            quantity: parseInt(document.getElementById('quantity').value),
+        }
+    }
+
+    async function add() {
+        await fetch('/items', {
+            method: 'POST',
+            body: JSON.stringify(get_input()),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
+        await update_list();
+    }
+    
+    async function update_item(id) {
+        await fetch(`/items/${id}`, {
+            method: 'PATCH',
+            body: JSON.stringify(get_input()),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
+        await update_list();
+    }
+
+    async function update_list() {
+        let list = await fetch('/items');
+        list = await list.json();
+        let inner_html = '';
+        for (const entry of list) {
+            inner_html += `
+        <div>
+            <p>${entry.name}</p>
+            <p>${entry.description}</p>
+            <p>${entry.quantity}</p>
+            <button onclick="update_item('${entry.id}')">UPDATE</button>
+            <br>
+        </div>
+        `;
+        }
+        document.getElementById('list').innerHTML = inner_html;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        update_list();
+        document.getElementById('add').addEventListener('click', add);
+    })
+</script>
+
 <body>
-    <p>Hello World!</p>
+    <input id="name" placeholder="name" />
+    <br>
+    <textarea id="description" placeholder="description"></textarea>
+    <br>
+    <input id="quantity" placeholder="quantity" type="number" min="0" value="0" />
+    <br>
+    <button id="add">ADD</button>
+    <div id="list">
+        loading...
+    </div>
 </body>
 
 </html>
