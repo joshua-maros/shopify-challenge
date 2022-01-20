@@ -25,7 +25,7 @@
         });
         await update_list();
     }
-    
+
     async function update_item(id) {
         await fetch(`/items/${id}`, {
             method: 'PATCH',
@@ -35,6 +35,11 @@
                 'Content-Type': 'application/json'
             }
         });
+        await update_list();
+    }
+
+    async function delete_item(id) {
+        await fetch(`/items/${id}`, { method: 'DELETE', });
         await update_list();
     }
 
@@ -49,6 +54,7 @@
             <p>${entry.description}</p>
             <p>${entry.quantity}</p>
             <button onclick="update_item('${entry.id}')">UPDATE</button>
+            <button onclick="delete_item('${entry.id}')">DELETE</button>
             <br>
         </div>
         `;
